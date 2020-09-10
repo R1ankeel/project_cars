@@ -34,7 +34,10 @@ const getQuantityElements = elementHeight => {
 
 const startGame = (e) => {
     start.classList.add('hide');
-
+    gameArea.innerHTML = '';
+    car.style.left = (gameArea.offsetWidth / 2) - (car.offsetWidth / 2);
+    car.style.top = 'auto';
+    car.style.bottom = '10px';
     for (let i = 0; i < getQuantityElements(100); i++){
         const line = document.createElement('div');
         line.classList.add('line')
@@ -53,7 +56,7 @@ const startGame = (e) => {
         enemy.style.background ='transparent url(\'./images/enemy2.png\') center / cover no-repeat';
         gameArea.appendChild(enemy);
     }
-
+    gameController.score = 0;
     gameController.start = true;
     gameArea.appendChild(car)
     gameController.x = car.offsetLeft;
@@ -72,6 +75,8 @@ const moveEnemy = () => {
             carCollider.left <= enemyCollider.right &&
             carCollider.bottom >= enemyCollider.top) {
             gameController.start = false;
+            start.classList.remove('hide');
+            start.style.top = score.offsetHeight;
         }
 
         item.y += gameController.speed / 2;
@@ -90,7 +95,7 @@ const moveRoad = () => {
         line.y += gameController.speed;
         line.style.top = line.y + 'px';
 
-        if (line.y > document.documentElement.clientHeight) {
+        if (line.y > document.documentElement.clientHeight + 100) {
             line.y = -100;
         }
     })
@@ -98,7 +103,8 @@ const moveRoad = () => {
 
 const gameplay = () => {
     if (gameController.start) {
-
+        gameController.score += gameController.speed;
+        score.textContent = `Score: ${gameController.score}`;
         moveRoad();
         moveEnemy();
         if (keys.ArrowLeft && gameController.x > 0){
